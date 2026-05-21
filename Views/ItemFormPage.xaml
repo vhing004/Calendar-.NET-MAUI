@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:LichBieu.ViewModels"
+             xmlns:conv="clr-namespace:LichBieu.Converters"
+             x:Class="LichBieu.Views.ItemFormPage"
+             BackgroundColor="{StaticResource Background}">
+
+    <NavigationPage.TitleView>
+        <Label Text="{Binding FormTitle}" FontSize="17" FontAttributes="Bold"
+               TextColor="White" VerticalOptions="Center" Margin="0"/>
+    </NavigationPage.TitleView>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="✕" Clicked="OnCloseClicked"/>
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="14">
+
+            <!-- Type Toggle -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Grid.Column="0" x:Name="BtnEvent"
+                        Text="📅 Sự kiện"
+                        Clicked="OnEventTypeClicked"
+                        BackgroundColor="#6366f1" TextColor="White"
+                        CornerRadius="10" FontSize="14"/>
+                <Button Grid.Column="1" x:Name="BtnTask"
+                        Text="✅ Công việc"
+                        Clicked="OnTaskTypeClicked"
+                        BackgroundColor="#f1f5f9" TextColor="#64748b"
+                        CornerRadius="10" FontSize="14"/>
+            </Grid>
+
+            <!-- Title -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Tiêu đề *" FontSize="13" FontAttributes="Bold" TextColor="#374151"/>
+                <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                    <Entry Text="{Binding Title}" Placeholder="Nhập tiêu đề..."
+                           PlaceholderColor="#94a3b8" TextColor="#1e293b"
+                           FontSize="14" BackgroundColor="White" Margin="8,0"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Category -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Danh mục" FontSize="13" FontAttributes="Bold" TextColor="#374151"/>
+                <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8"
+                        BackgroundColor="White">
+                    <Picker ItemsSource="{Binding CategoryLabels}"
+                            SelectedIndex="{Binding CategoryIndex}"
+                            TextColor="#1e293b" BackgroundColor="Transparent"
+                            FontSize="14" Margin="8,0"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Date -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Ngày *" FontSize="13" FontAttributes="Bold" TextColor="#374151"/>
+                <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8"
+                        BackgroundColor="White">
+                    <DatePicker x:Name="DatePickerControl"
+                                Format="dd/MM/yyyy"
+                                DateSelected="OnDateSelected"
+                                TextColor="#1e293b" BackgroundColor="Transparent"
+                                FontSize="14" Margin="8,6"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Time (events only) -->
+            <VerticalStackLayout Spacing="4" IsVisible="{Binding IsEventType}">
+                <Label Text="Thời gian" FontSize="13" FontAttributes="Bold" TextColor="#374151"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="Bắt đầu" FontSize="11" TextColor="#94a3b8"/>
+                        <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8" BackgroundColor="White">
+                            <TimePicker x:Name="StartTimePicker" Format="HH:mm"
+                                        PropertyChanged="OnStartTimeChanged"
+                                        TextColor="#1e293b" BackgroundColor="Transparent"
+                                        FontSize="14" Margin="8,4"/>
+                        </Border>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                        <Label Text="Kết thúc" FontSize="11" TextColor="#94a3b8"/>
+                        <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8" BackgroundColor="White">
+                            <TimePicker x:Name="EndTimePicker" Format="HH:mm"
+                                        PropertyChanged="OnEndTimeChanged"
+                                        TextColor="#1e293b" BackgroundColor="Transparent"
+                                        FontSize="14" Margin="8,4"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- Priority (tasks only) -->
+            <VerticalStackLayout Spacing="4" IsVisible="{Binding IsTaskType}">
+                <Label Text="Mức độ ưu tiên" FontSize="13" FontAttributes="Bold" TextColor="#374151"/>
+                <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8" BackgroundColor="White">
+                    <Picker ItemsSource="{Binding PriorityLabels}"
+                            SelectedIndex="{Binding PriorityIndex}"
+                            TextColor="#1e293b" BackgroundColor="Transparent"
+                            FontSize="14" Margin="8,0"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Location (events only) -->
+            <VerticalStackLayout Spacing="4" IsVisible="{Binding IsEventType}">
+                <Label Text="Địa điểm" FontSize="13" FontAttributes="Bold" TextColor="#374151"/>
+                <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                    <Entry Text="{Binding Location}" Placeholder="Nhập địa điểm..."
+                           PlaceholderColor="#94a3b8" TextColor="#1e293b"
+                           BackgroundColor="White" FontSize="14" Margin="8,0"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Reminder -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Nhắc nhở" FontSize="13" FontAttributes="Bold" TextColor="#374151"/>
+                <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8" BackgroundColor="White">
+                    <Picker ItemsSource="{Binding ReminderLabels}"
+                            SelectedIndex="{Binding ReminderIndex}"
+                            TextColor="#1e293b" BackgroundColor="Transparent"
+                            FontSize="14" Margin="8,0"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Tags -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Tags" FontSize="13" FontAttributes="Bold" TextColor="#374151"/>
+                <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                    <Entry Text="{Binding Tags}" Placeholder="#work #important"
+                           PlaceholderColor="#94a3b8" TextColor="#1e293b"
+                           BackgroundColor="White" FontSize="14" Margin="8,0"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Description -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Mô tả" FontSize="13" FontAttributes="Bold" TextColor="#374151"/>
+                <Border Stroke="#e2e8f0" StrokeThickness="1" StrokeShape="RoundRectangle 8">
+                    <Editor Text="{Binding Description}"
+                            Placeholder="Nhập mô tả chi tiết..."
+                            PlaceholderColor="#94a3b8" TextColor="#1e293b"
+                            BackgroundColor="White" FontSize="14"
+                            HeightRequest="90" Margin="8,4"/>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Save -->
+            <Button Text="💾  Lưu"
+                    Clicked="OnSaveClicked"
+                    BackgroundColor="#6366f1" TextColor="White"
+                    CornerRadius="12" FontSize="16" FontAttributes="Bold"
+                    HeightRequest="52" Margin="0,8,0,24"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

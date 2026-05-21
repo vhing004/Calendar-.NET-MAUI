@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LichBieu.App">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Global Shadow -->
+            <Shadow x:Key="DefaultShadow"
+                    Brush="#20000000"
+                    Offset="0,2"
+                    Radius="8"
+                    Opacity="0.15"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
